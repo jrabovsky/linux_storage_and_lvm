@@ -2,7 +2,7 @@
 
 ## Topics
 * [disks and partitions](https://github.com/jrabovsky/linux_storage_and_lvm/tree/master/disks_and_partitions)
-* [filesystems](https://github.com/jrabovsky/linux_storage_and_lvm/tree/master/Filesystems)
+* [filesystems](https://github.com/jrabovsky/linux_storage_and_lvm/tree/master/filesystems)
 * [LVM]()
 
 ## Using Vagrant
