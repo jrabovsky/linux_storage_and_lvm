@@ -228,6 +228,12 @@ $ sudo vgs
   vg_test    2   1   0 wz--n-  2.99g 1012.00m
 ```
 
+Or instead of specifying a new size for an LV, its possible to extend an LV to use all unallocated space in a VG:
+
+```
+$ lvextend -l +100%FREE /dev/vg_test/jeffs_lv
+```
+
 Then the filesystem on that LV needs to be resized:
 
 ```
