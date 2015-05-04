@@ -200,4 +200,59 @@ $ sudo mount -t ext4 /dev/vg_test/lv_test /lvm_testmount
 
 ## Growing and Shrinking LVs
 
+### Growing an LV
+
+In this example we have an LV `jeffs_lv` in VG `vg_test` with 1.52 GB free:
+
+```
+$ sudo lvs
+  LV       VG       Attr       LSize   Pool Origin Data%  Move Log Cpy%Sync Convert
+  lv_root  VolGroup -wi-ao----  38.60g
+  lv_swap  VolGroup -wi-ao---- 928.00m
+  jeffs_lv vg_test  -wi-ao----   1.46g
+$ sudo vgs
+  VG       #PV #LV #SN Attr   VSize  VFree
+  VolGroup   1   2   0 wz--n- 39.51g    0
+  vg_test    2   1   0 wz--n-  2.99g 1.52g
+$ sudo lvextend -L 2G /dev/vg_test/jeffs_lv
+  Extending logical volume jeffs_lv to 2.00 GiB
+  Logical volume jeffs_lv successfully resized
+$ sudo lvs
+  LV       VG       Attr       LSize   Pool Origin Data%  Move Log Cpy%Sync Convert
+  lv_root  VolGroup -wi-ao----  38.60g
+  lv_swap  VolGroup -wi-ao---- 928.00m
+  jeffs_lv vg_test  -wi-ao----   2.00g
+$ sudo vgs
+  VG       #PV #LV #SN Attr   VSize  VFree
+  VolGroup   1   2   0 wz--n- 39.51g       0
+  vg_test    2   1   0 wz--n-  2.99g 1012.00m
+```
+
+Then the filesystem on that LV needs to be resized:
+
+```
+$ sudo df -h /lvm_testmount
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_test-jeffs_lv  1.5G   36M  1.4G   3% /lvm_testmount
+$ sudo resize2fs /dev/vg_test/jeffs_lv
+resize2fs 1.41.12 (17-May-2010)
+Filesystem at /dev/vg_test/jeffs_lv is mounted on /lvm_testmount; on-line resizing required
+old desc_blocks = 1, new_desc_blocks = 1
+Performing an on-line resize of /dev/vg_test/jeffs_lv to 524288 (4k) blocks.
+The filesystem on /dev/vg_test/jeffs_lv is now 524288 blocks long.
+$ sudo df -h /lvm_testmount
+Filesystem                    Size  Used Avail Use% Mounted on
+/dev/mapper/vg_test-jeffs_lv  2.0G   36M  1.9G   2% /lvm_testmount
+```
+
+### Shrinking an LV
+
+1. Backup data
+2. Unmount the filesystem
+3. Check the filesystem
+4. Reduce the filesystem
+5. Reduce the LV
+6. Re-check the filesystem
+7. Re-mount the filesystem
+
 TODO
